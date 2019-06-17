@@ -4,154 +4,172 @@ import "strings"
 
 func buildJSSchema() {
 	const src = `{
-  "id": "http://json-schema.org/draft-04/schema#",
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "Core schema meta-schema",
-  "definitions": {
-    "schemaArray": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#" }
-    },
-    "positiveInteger": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "positiveIntegerDefault0": {
-      "allOf": [ { "$ref": "#/definitions/positiveInteger" }, { "default": 0 } ]
-    },
-    "simpleTypes": {
-      "enum": [ "array", "boolean", "integer", "null", "number", "object", "string" ]
-    },
-    "stringArray": {
-      "type": "array",
-      "items": { "type": "string" },
-      "minItems": 1,
-      "uniqueItems": true
-    }
-  },
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "format": "uri"
-    },
-    "$schema": {
-      "type": "string",
-      "format": "uri"
-    },
-    "title": {
-      "type": "string"
-    },
-    "description": {
-      "type": "string"
-    },
-    "default": {},
-    "multipleOf": {
-      "type": "number",
-      "minimum": 0,
-      "exclusiveMinimum": true
-    },
-    "maximum": {
-      "type": "number"
-    },
-    "exclusiveMaximum": {
-      "type": "boolean",
-      "default": false
-    },
-    "minimum": {
-      "type": "number"
-    },
-    "exclusiveMinimum": {
-      "type": "boolean",
-      "default": false
-    },
-    "maxLength": { "$ref": "#/definitions/positiveInteger" },
-    "minLength": { "$ref": "#/definitions/positiveIntegerDefault0" },
-    "pattern": {
-      "type": "string",
-      "format": "regex"
-    },
-    "additionalItems": {
-      "anyOf": [
-        { "type": "boolean" },
-        { "$ref": "#" }
-      ],
-      "default": {}
-    },
-    "items": {
-      "anyOf": [
-        { "$ref": "#" },
-        { "$ref": "#/definitions/schemaArray" }
-      ],
-      "default": {}
-    },
-    "maxItems": { "$ref": "#/definitions/positiveInteger" },
-    "minItems": { "$ref": "#/definitions/positiveIntegerDefault0" },
-    "uniqueItems": {
-      "type": "boolean",
-      "default": false
-    },
-    "maxProperties": { "$ref": "#/definitions/positiveInteger" },
-    "minProperties": { "$ref": "#/definitions/positiveIntegerDefault0" },
-    "required": { "$ref": "#/definitions/stringArray" },
-    "additionalProperties": {
-      "anyOf": [
-        { "type": "boolean" },
-        { "$ref": "#" }
-      ],
-      "default": {}
-    },
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://json-schema.org/draft-07/schema#",
+    "title": "Core schema meta-schema",
     "definitions": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#" },
-      "default": {}
-    },
-    "properties": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#" },
-      "default": {}
-    },
-    "patternProperties": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#" },
-      "default": {}
-    },
-    "dependencies": {
-      "type": "object",
-      "additionalProperties": {
-        "anyOf": [
-          { "$ref": "#" },
-          { "$ref": "#/definitions/stringArray" }
-        ]
-      }
-    },
-    "enum": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true
-    },
-    "type": {
-      "anyOf": [
-        { "$ref": "#/definitions/simpleTypes" },
-        {
-          "type": "array",
-          "items": { "$ref": "#/definitions/simpleTypes" },
-          "minItems": 1,
-          "uniqueItems": true
+        "schemaArray": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#" }
+        },
+        "nonNegativeInteger": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "nonNegativeIntegerDefault0": {
+            "allOf": [
+                { "$ref": "#/definitions/nonNegativeInteger" },
+                { "default": 0 }
+            ]
+        },
+        "simpleTypes": {
+            "enum": [
+                "array",
+                "boolean",
+                "integer",
+                "null",
+                "number",
+                "object",
+                "string"
+            ]
+        },
+        "stringArray": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true,
+            "default": []
         }
-      ]
     },
-    "allOf": { "$ref": "#/definitions/schemaArray" },
-    "anyOf": { "$ref": "#/definitions/schemaArray" },
-    "oneOf": { "$ref": "#/definitions/schemaArray" },
-    "not": { "$ref": "#" }
-  },
-  "dependencies": {
-    "exclusiveMaximum": [ "maximum" ],
-    "exclusiveMinimum": [ "minimum" ]
-  },
-  "default": {}
+    "type": ["object", "boolean"],
+    "properties": {
+        "$id": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "$ref": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$comment": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "default": true,
+        "readOnly": {
+            "type": "boolean",
+            "default": false
+        },
+        "examples": {
+            "type": "array",
+            "items": true
+        },
+        "multipleOf": {
+            "type": "number",
+            "exclusiveMinimum": 0
+        },
+        "maximum": {
+            "type": "number"
+        },
+        "exclusiveMaximum": {
+            "type": "number"
+        },
+        "minimum": {
+            "type": "number"
+        },
+        "exclusiveMinimum": {
+            "type": "number"
+        },
+        "maxLength": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minLength": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "pattern": {
+            "type": "string",
+            "format": "regex"
+        },
+        "additionalItems": { "$ref": "#" },
+        "items": {
+            "anyOf": [
+                { "$ref": "#" },
+                { "$ref": "#/definitions/schemaArray" }
+            ],
+            "default": true
+        },
+        "maxItems": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minItems": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "uniqueItems": {
+            "type": "boolean",
+            "default": false
+        },
+        "contains": { "$ref": "#" },
+        "maxProperties": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minProperties": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "required": { "$ref": "#/definitions/stringArray" },
+        "additionalProperties": { "$ref": "#" },
+        "definitions": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "patternProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "propertyNames": { "format": "regex" },
+            "default": {}
+        },
+        "dependencies": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    { "$ref": "#" },
+                    { "$ref": "#/definitions/stringArray" }
+                ]
+            }
+        },
+        "propertyNames": { "$ref": "#" },
+        "const": true,
+        "enum": {
+            "type": "array",
+            "items": true,
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "type": {
+            "anyOf": [
+                { "$ref": "#/definitions/simpleTypes" },
+                {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/simpleTypes" },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            ]
+        },
+        "format": { "type": "string" },
+        "contentMediaType": { "type": "string" },
+        "contentEncoding": { "type": "string" },
+        "if": { "$ref": "#" },
+        "then": { "$ref": "#" },
+        "else": { "$ref": "#" },
+        "allOf": { "$ref": "#/definitions/schemaArray" },
+        "anyOf": { "$ref": "#/definitions/schemaArray" },
+        "oneOf": { "$ref": "#/definitions/schemaArray" },
+        "not": { "$ref": "#" }
+    },
+    "default": true
 }`
 	if err := _schema.Decode(strings.NewReader(src)); err != nil {
 		// We regret to inform you that if we can't parse this
@@ -163,173 +181,72 @@ func buildJSSchema() {
 
 func buildHyperSchema() {
 	const src = `{
-  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
-  "id": "http://json-schema.org/draft-04/hyper-schema#",
-  "title": "JSON Hyper-Schema",
-  "allOf": [
-    {
-      "$ref": "http://json-schema.org/draft-04/schema#"
-    }
-  ],
-  "properties": {
-    "additionalItems": {
-      "anyOf": [
-        {
-          "type": "boolean"
-        },
-        {
-          "$ref": "#"
-        }
-      ]
-    },
-    "additionalProperties": {
-      "anyOf": [
-        {
-          "type": "boolean"
-        },
-        {
-          "$ref": "#"
-        }
-      ]
-    },
-    "dependencies": {
-      "additionalProperties": {
-        "anyOf": [
-          {
-            "$ref": "#"
-          },
-          {
-            "type": "array"
-          }
-        ]
-      }
-    },
-    "items": {
-      "anyOf": [
-        {
-          "$ref": "#"
-        },
-        {
-          "$ref": "#/definitions/schemaArray"
-        }
-      ]
-    },
+    "$schema": "http://json-schema.org/draft-07/hyper-schema#",
+    "$id": "http://json-schema.org/draft-07/hyper-schema#",
+    "title": "JSON Hyper-Schema",
     "definitions": {
-      "additionalProperties": {
-        "$ref": "#"
-      }
+        "schemaArray": {
+            "allOf": [
+                { "$ref": "http://json-schema.org/draft-07/schema#/definitions/schemaArray" },
+                {
+                    "items": { "$ref": "#" }
+                }
+            ]
+        }
     },
-    "patternProperties": {
-      "additionalProperties": {
-        "$ref": "#"
-      }
-    },
+    "allOf": [ { "$ref": "http://json-schema.org/draft-07/schema#" } ],
     "properties": {
-      "additionalProperties": {
-        "$ref": "#"
-      }
-    },
-    "allOf": {
-      "$ref": "#/definitions/schemaArray"
-    },
-    "anyOf": {
-      "$ref": "#/definitions/schemaArray"
-    },
-    "oneOf": {
-      "$ref": "#/definitions/schemaArray"
-    },
-    "not": {
-      "$ref": "#"
-    },
-    "links": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/linkDescription"
-      }
-    },
-    "fragmentResolution": {
-      "type": "string"
-    },
-    "media": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "description": "A media type, as described in RFC 2046",
-          "type": "string"
+        "additionalItems": { "$ref": "#" },
+        "additionalProperties": { "$ref": "#"},
+        "dependencies": {
+            "additionalProperties": {
+                "anyOf": [
+                    { "$ref": "#" },
+                    { "type": "array" }
+                ]
+            }
         },
-        "binaryEncoding": {
-          "description": "A content encoding scheme, as described in RFC 2045",
-          "type": "string"
+        "items": {
+            "anyOf": [
+                { "$ref": "#" },
+                { "$ref": "#/definitions/schemaArray" }
+            ]
+        },
+        "definitions": {
+            "additionalProperties": { "$ref": "#" }
+        },
+        "patternProperties": {
+            "additionalProperties": { "$ref": "#" }
+        },
+        "properties": {
+            "additionalProperties": { "$ref": "#" }
+        },
+        "if": { "$ref": "#" },
+        "then": { "$ref": "#" },
+        "else": { "$ref": "#" },
+        "allOf": { "$ref": "#/definitions/schemaArray" },
+        "anyOf": { "$ref": "#/definitions/schemaArray" },
+        "oneOf": { "$ref": "#/definitions/schemaArray" },
+        "not": { "$ref": "#" },
+        "contains": { "$ref": "#" },
+        "propertyNames": { "$ref": "#" },
+        "base": {
+            "type": "string",
+            "format": "uri-template"
+        },
+        "links": {
+            "type": "array",
+            "items": {
+                "$ref": "http://json-schema.org/draft-07/links#"
+            }
         }
-      }
     },
-    "pathStart": {
-      "description": "Instances' URIs must start with this value for this schema to apply to them",
-      "type": "string",
-      "format": "uri"
-    }
-  },
-  "definitions": {
-    "schemaArray": {
-      "type": "array",
-      "items": {
-        "$ref": "#"
-      }
-    },
-    "linkDescription": {
-      "title": "Link Description Object",
-      "type": "object",
-      "required": [
-        "href",
-        "rel"
-      ],
-      "properties": {
-        "href": {
-          "description": "a URI template, as defined by RFC 6570, with the addition of the $, ( and ) characters for pre-processing",
-          "type": "string"
-        },
-        "rel": {
-          "description": "relation to the target resource of the link",
-          "type": "string"
-        },
-        "title": {
-          "description": "a title for the link",
-          "type": "string"
-        },
-        "targetSchema": {
-          "description": "JSON Schema describing the link target",
-          "$ref": "#"
-        },
-        "mediaType": {
-          "description": "media type (as defined by RFC 2046) describing the link target",
-          "type": "string"
-        },
-        "method": {
-          "description": "method for requesting the target of the link (e.g. for HTTP this might be \"GET\" or \"DELETE\")",
-          "type": "string"
-        },
-        "encType": {
-          "description": "The media type in which to submit data along with the request",
-          "type": "string",
-          "default": "application/json"
-        },
-        "schema": {
-          "description": "Schema describing the data to submit along with the request",
-          "$ref": "#"
+    "links": [
+        {
+            "rel": "self",
+            "href": "{+%24id}"
         }
-      }
-    }
-  },
-  "links": [
-    {
-      "rel": "self",
-      "href": "{+id}"
-    },
-    {
-      "rel": "full",
-      "href": "{+($ref)}"
-    }
-  ]
+    ]
 }`
 	if err := _hyperSchema.Decode(strings.NewReader(src)); err != nil {
 		// We regret to inform you that if we can't parse this
