@@ -102,8 +102,8 @@ type Schema struct {
 	MultipleOf       Number `json:"multipleOf,omitempty"`
 	Minimum          Number `json:"minimum,omitempty"`
 	Maximum          Number `json:"maximum,omitempty"`
-	ExclusiveMinimum Bool   `json:"exclusiveMinimum,omitempty"`
-	ExclusiveMaximum Bool   `json:"exclusiveMaximum,omitempty"`
+	ExclusiveMinimum Number `json:"exclusiveMinimum,omitempty"`
+	ExclusiveMaximum Number `json:"exclusiveMaximum,omitempty"`
 
 	// StringValidation
 	MaxLength Integer        `json:"maxLength,omitempty"`
