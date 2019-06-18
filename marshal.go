@@ -7,6 +7,9 @@ import (
 
 	"github.com/lestrrat-go/pdebug"
 	"github.com/pkg/errors"
+
+	"fmt"
+	"log"
 )
 
 func extractNumber(n *Number, m map[string]interface{}, s string) error {
@@ -239,6 +242,8 @@ func (l *SchemaList) Extract(v interface{}) error {
 		}
 		*l = []*Schema{s}
 		return nil
+	case bool:
+		return nil
 	default:
 		return errors.Wrap(
 			errInvalidType("[]*Schema or *Schema", v),
@@ -256,6 +261,7 @@ func extractSchemaMapEntry(s *Schema, name string, m map[string]interface{}) err
 }
 
 func extractSchemaMap(m map[string]interface{}, name string) (map[string]*Schema, error) {
+	log.Printf(">>>> extractSchemaMap %v %v", name, m)
 	v, ok := m[name]
 	if !ok {
 		return nil, nil
@@ -272,23 +278,32 @@ func extractSchemaMap(m map[string]interface{}, name string) (map[string]*Schema
 	r := make(map[string]*Schema)
 	for k, data := range val {
 		// data better be a map
-		m, ok := data.(map[string]interface{})
-		if !ok {
-			return nil, errors.Wrap(
-				errInvalidType("map[string]interface{}", data),
-				"failed to extract sub field",
-			)
-		}
 
-		s := New()
-		if err := extractSchemaMapEntry(s, k, m); err != nil {
-			return nil, err
-		}
-		r[k] = s
+		switch data.(type) {
+		case map[string]interface{}:
+			m, ok := data.(map[string]interface{})
+			if !ok {
+				return nil, errors.Wrap(
+					errInvalidType("map[string]interface{}", data),
+					fmt.Sprintf("failed to extract sub field %s", k),
+				)
+			}
 
-		if k == "domain" {
-			if pdebug.Enabled {
-				pdebug.Printf("after extractSchemaMapEntry: %#v", s.Extras)
+			s := New()
+			if err := extractSchemaMapEntry(s, k, m); err != nil {
+				return nil, err
+			}
+			r[k] = s
+
+			if k == "domain" {
+				if pdebug.Enabled {
+					pdebug.Printf("after extractSchemaMapEntry: %#v", s.Extras)
+				}
+			}
+		case bool:
+			m, ok := data.(bool)
+			if ok && m {
+				r[k] = New()
 			}
 		}
 	}
@@ -340,6 +355,8 @@ func extractItems(res **ItemSpec, m map[string]interface{}, name string) error {
 		return nil
 	}
 
+	log.Printf("!!! extractItems v: %v m: %v name: %v", v, m, name)
+
 	if pdebug.Enabled {
 		pdebug.Printf("Found array element '%s'", name)
 	}
@@ -348,7 +365,7 @@ func extractItems(res **ItemSpec, m map[string]interface{}, name string) error {
 	switch v.(type) {
 	case []interface{}:
 		tupleMode = true
-	case map[string]interface{}:
+	case map[string]interface{}, bool:
 	default:
 		return errors.Wrap(
 			errInvalidType("[]interface{} or map[string]interface{}", v),
@@ -587,6 +604,14 @@ func (s *Schema) Extract(m map[string]interface{}) error {
 		return errors.Wrap(err, "failed to extract 'dependencies'")
 	}
 
+	if err = extractInterface(&s.Const, m, "const"); err != nil {
+		return errors.Wrap(err, "failed to extract 'const'")
+	}
+
+	if err = extractInterfaceList(&s.Examples, m, "examples"); err != nil {
+		return errors.Wrap(err, "failed to extract 'examples'")
+	}
+
 	if _, ok := m["additionalItems"]; !ok {
 		// doesn't exist. it's an empty schema
 		s.AdditionalItems = &AdditionalItems{}
@@ -650,7 +675,7 @@ func (s *Schema) Extract(m map[string]interface{}) error {
 	s.Extras = make(map[string]interface{})
 	for k, v := range m {
 		switch k {
-		case "$id", "title", "description", "required", "$schema", "$ref", "format", "enum", "default", "type", "definitions", "items", "pattern", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems", "maxProperties", "minProperties", "minimum", "exclusiveMinimum", "maximum", "exclusiveMaximum", "multipleOf", "properties", "dependencies", "additionalItems", "additionalProperties", "patternProperties", "allOf", "anyOf", "oneOf", "not":
+		case "$id", "title", "description", "required", "$schema", "$ref", "format", "enum", "default", "type", "definitions", "items", "pattern", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems", "maxProperties", "minProperties", "minimum", "exclusiveMinimum", "maximum", "exclusiveMaximum", "multipleOf", "properties", "dependencies", "additionalItems", "additionalProperties", "patternProperties", "allOf", "anyOf", "oneOf", "not", "const", "examples":
 			continue
 		}
 		if pdebug.Enabled {

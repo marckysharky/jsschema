@@ -60,7 +60,7 @@ type Integer struct {
 }
 
 // Bool represents a "boolean" value in a JSON Schema, such as
-// "exclusiveMinimum", "exclusiveMaximum", etc.
+// "uniqueItems".
 type Bool struct {
 	Val         bool
 	Default     bool
@@ -97,6 +97,8 @@ type Schema struct {
 	Definitions     map[string]*Schema `json:"definitions,omitempty"`
 	Reference       string             `json:"$ref,omitempty"`
 	Format          Format             `json:"format,omitempty"`
+	Const           interface{}        `json:"const,omitempty"`
+	Examples        []interface{}      `json:"examples,omitempty"`
 
 	// NumericValidations
 	MultipleOf       Number `json:"multipleOf,omitempty"`
