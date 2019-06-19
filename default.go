@@ -4,7 +4,7 @@ import "strings"
 
 func buildJSSchema() {
 	const src = `{
-  "id": "http://json-schema.org/draft-04/schema#",
+  "$id": "http://json-schema.org/draft-04/schema#",
   "$schema": "http://json-schema.org/draft-04/schema#",
   "description": "Core schema meta-schema",
   "definitions": {
@@ -32,7 +32,7 @@ func buildJSSchema() {
   },
   "type": "object",
   "properties": {
-    "id": {
+    "$id": {
       "type": "string",
       "format": "uri"
     },

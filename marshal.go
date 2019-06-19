@@ -479,7 +479,7 @@ func (s *Schema) Extract(m map[string]interface{}) error {
 
 	var err error
 
-	if err = extractString(&s.ID, m, "id"); err != nil {
+	if err = extractString(&s.ID, m, "$id"); err != nil {
 		return errors.Wrapf(err, "failed to extract 'id'")
 	}
 
@@ -650,7 +650,7 @@ func (s *Schema) Extract(m map[string]interface{}) error {
 	s.Extras = make(map[string]interface{})
 	for k, v := range m {
 		switch k {
-		case "id", "title", "description", "required", "$schema", "$ref", "format", "enum", "default", "type", "definitions", "items", "pattern", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems", "maxProperties", "minProperties", "minimum", "exclusiveMinimum", "maximum", "exclusiveMaximum", "multipleOf", "properties", "dependencies", "additionalItems", "additionalProperties", "patternProperties", "allOf", "anyOf", "oneOf", "not":
+		case "$id", "title", "description", "required", "$schema", "$ref", "format", "enum", "default", "type", "definitions", "items", "pattern", "minLength", "maxLength", "minItems", "maxItems", "uniqueItems", "maxProperties", "minProperties", "minimum", "exclusiveMinimum", "maximum", "exclusiveMaximum", "multipleOf", "properties", "dependencies", "additionalItems", "additionalProperties", "patternProperties", "allOf", "anyOf", "oneOf", "not":
 			continue
 		}
 		if pdebug.Enabled {
@@ -738,7 +738,7 @@ func canBeType(s *Schema, primType PrimitiveType) bool {
 func (s *Schema) MarshalJSON() ([]byte, error) {
 	m := make(map[string]interface{})
 
-	placeString(m, "id", s.ID)
+	placeString(m, "$id", s.ID)
 	placeString(m, "title", s.Title)
 	placeString(m, "description", s.Description)
 	placeString(m, "$schema", s.SchemaRef)
